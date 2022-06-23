@@ -1,0 +1,46 @@
+app-id: io.extra2000.wkentaro.labelme
+branch: master
+runtime: org.gnome.Sdk
+runtime-version: '42'
+sdk: org.gnome.Sdk
+command: labelme
+tags:
+  - master
+
+finish-args:
+  - --require-version=1.7.1
+  - --share=ipc
+  - --socket=x11
+  - --socket=wayland
+  - --filesystem=home
+  - --device=dri
+  - --talk-name=org.gnome.SessionManager
+  - --env=PYTHONPATH=/app/plugins/site-packages
+
+build-options:
+  env:
+    PIP_PREFIX: /app
+  build-args:
+    - "--share=network"
+
+cleanup:
+  - /include
+  - /lib/debug
+  - /lib/pkgconfig
+  - /share/gtk-doc
+  - /share/man
+  - '*.a'
+  - '*.la'
+
+modules:
+  - name: labelme
+    buildsystem: simple
+    build-commands:
+      - python3 -m pip install .
+    sources:
+      - type: git
+        url: https://github.com/extra2000/wkentaro-labelme.git
+        tag: v5.0.1
+        commit: d6d3292e96e5ee910a393a1feb40dc160354dd0b
+    post-install:
+      - install -d /app/plugins
